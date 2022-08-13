@@ -1,19 +1,23 @@
-from requests_html import HTMLSession
+import os
 import wget
-from sys import platform
-import ctypes
 
-link = input("Введите ссылку на трек или альбом: ")
+from requests_html import HTMLSession
 
-if platform[0:3].lower() == "win":
-	kernel32 = ctypes.windll.kernel32
-	kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
+os.system("")
+
+link = input("Ссылка на трек, альбом или страницу исполнителя: ")
 
 try:
 	session = HTMLSession()
 	session = session.get(link)
-	cover = (session.html.search("background-image:url('{}')")[0])
-	wget.download(cover, "cover.png", bar=None)
-	print("\033[92m" + "[+] Загрузка завершена")
-except Exception:
+
+	if ("artist" in link):
+		cover = (session.html.search("background-image: url('{}')")[0])
+		wget.download(cover, "cover.png", bar=None)
+		print("\033[92m" + "[+] Загрузка завершена")
+	else:
+		cover = (session.html.search("background-image:url('{}')")[0])
+		wget.download(cover, "cover.png", bar=None)
+		print("\033[92m" + "[+] Загрузка завершена")
+except Exception as e:
 	print("\033[91m" + "[!] Неправильная ссылка")
